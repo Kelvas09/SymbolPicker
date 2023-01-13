@@ -10,7 +10,7 @@ SymbolPicker allows you to offer a view to your users to select a symbol very ea
 
 |Standard|Search|Limited|
 |---|---|---|
-|![standard list](./.assets/standard.png)|![search](./.assets/search.png)|![search](./.assets/limited.png)|
+|![standard list](./.assets/standards.png)|![search](./.assets/search.png)|![search](./.assets/limited.png)|
 
 ![Edemo](./.assets/vid.gif)
 
@@ -159,6 +159,10 @@ NavigationView {
 }
 ...
 ```
+
+## Similar
+
+If you are interested in this package you will probably also be interested in an emoji picker: [EmojiPicker](https://github.com/Kelvas09/EmojiPicker)
 
 ## Samples
 
