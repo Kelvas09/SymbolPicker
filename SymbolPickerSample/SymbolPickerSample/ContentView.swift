@@ -8,6 +8,8 @@
 import SwiftUI
 import SymbolPicker
 
+var provider: GenericProvider? = nil
+
 struct ContentView: View {
 
     @State
@@ -17,30 +19,52 @@ struct ContentView: View {
     var displaySymbolPicker: Bool = false
 
     @State
-    var displayLimitedSymbolPicker: Bool = false
+    var displayCustomPicker: Bool = false
+
+    @State
+    var displayCategoryPicker: Bool = false
 
     var body: some View {
-        VStack {
+        List {
             VStack {
                 Image(systemName: selectedSymbol?.value ?? "")
                     .font(.largeTitle)
             }
             .padding(8)
-            Button {
-                displaySymbolPicker = true
-            } label: {
-                Text("Select standard symbols")
+            Section("All") {
+                Button {
+                    displaySymbolPicker = true
+                } label: {
+                    Text("Select standard symbols")
+                }
+                .buttonStyle(.borderedProminent)
+                .listRowSeparator(.hidden)
             }
-            .buttonStyle(.borderedProminent)
-            Button {
-                displayLimitedSymbolPicker = true
-            } label: {
-                Text("Select limited symbols (custom provider)")
+            Section("Providers") {
+                ForEach(SymbolProviderType.allCases, id: \.self) { type in
+                    Button {
+                        provider = GenericProviderFactory.create(type: type)
+                        displayCustomPicker = true
+                    } label: {
+                        Text("Select \(type.name) symbols")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .padding(.top, 8)
+                    .listRowSeparator(.hidden)
+                }
             }
-            .buttonStyle(.borderedProminent)
-            .padding(.top, 8)
+            Section("All with categories") {
+                Button {
+                    displayCategoryPicker = true
+                } label: {
+                    Text("Select symbols inside categories")
+                }
+                .buttonStyle(.borderedProminent)
+                .padding(.top, 8)
+                .listRowSeparator(.hidden)
+            }
         }
-        .padding()
+        .listStyle(.plain)
         .sheet(isPresented: $displaySymbolPicker) {
             NavigationView {
                 SymbolPickerView(selectedSymbol: $selectedSymbol, selectedColor: .orange)
@@ -48,10 +72,22 @@ struct ContentView: View {
                     .navigationBarTitleDisplayMode(.inline)
             }
         }
-        .sheet(isPresented: $displayLimitedSymbolPicker) {
+        .sheet(isPresented: $displayCustomPicker) {
+            if let provider = provider {
+                NavigationView {
+                    SymbolPickerView(selectedSymbol: $selectedSymbol, selectedColor: .orange, symbolProvider:  provider)
+                        .navigationTitle("Symbols")
+                        .navigationBarTitleDisplayMode(.inline)
+                }
+            }
+        }
+        .sheet(isPresented: $displayCategoryPicker) {
             NavigationView {
-                SymbolPickerView(selectedSymbol: $selectedSymbol, selectedColor: .orange, symbolProvider:  LimitedSymbolProvider())
-                    .navigationTitle("Symbols")
+                SymbolCategoryPickerView(
+                    selectedSymbol: $selectedSymbol,
+                    selectedColor: .orange,
+                    categories: FullCategoriesSymbolProvider().categories)
+                    .navigationTitle("Categories")
                     .navigationBarTitleDisplayMode(.inline)
             }
         }

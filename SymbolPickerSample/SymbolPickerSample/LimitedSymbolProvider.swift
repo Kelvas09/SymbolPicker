@@ -10,8 +10,8 @@ import SymbolPicker
 
 final class LimitedSymbolProvider: SymbolProvider {
 
-    func getAll() -> [Symbol] {
-        return [
+    var symbols: [SymbolPicker.Symbol] {
+        [
             Symbol(value: "xmark"),
             Symbol(value: "square.and.arrow.down"),
             Symbol(value: "highlighter"),
